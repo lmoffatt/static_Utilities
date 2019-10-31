@@ -7,7 +7,7 @@
 #include <iomanip>
 #include <cstring>
 #include <functional>
-#include <qm_static_string.h>
+#include <static_string.h>
 
 //namespace qm {
 
