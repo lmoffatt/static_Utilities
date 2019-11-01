@@ -31,7 +31,7 @@ public:
     c_[N - 1] = '\0';
   }
 
-  constexpr const char *c_str() const { return &c_[0]; }
+  constexpr const char * c_str() const { return &c_[0]; }
 
   friend
       std::istream& operator>>(std::istream& is, my_static_string&& m)
@@ -58,6 +58,29 @@ public:
   }
 
   std::string str() const { return c_str(); }
+
+  template <std::size_t N2>
+  friend constexpr  bool operator < (const my_static_string& one, const my_static_string<N2>& two )
+  {
+    for (std::size_t i=0; i<std::min(N,N2); ++i)
+    {
+      if(one[i]<two[i]) return true;
+      else if (two[i]>one[i]) return false;
+    }
+    return N<N2;
+  }
+  friend constexpr  bool operator == (const my_static_string& one, const my_static_string& two )
+  {
+    for (std::size_t i=0; i<N; ++i)
+    {
+      if(one[i]!=two[i]) return false;
+    }
+    return true;
+  }
+  template <std::size_t N2>
+  friend constexpr  bool operator == (const my_static_string& one, const my_static_string<N2>& two )
+  {return false;}
+
 };
 
 template <int N>
