@@ -52,7 +52,7 @@ public:
   {
     for (auto i=0u; i<N; ++i)
     {
-       m.c_[i]=is.get();
+      m.c_[i]=is.get();
     }
     return is;
   }
@@ -65,7 +65,7 @@ public:
     for (std::size_t i=0; i<std::min(N,N2); ++i)
     {
       if(one[i]<two[i]) return true;
-      else if (two[i]>one[i]) return false;
+      else if (one[i]>two[i]) return false;
     }
     return N<N2;
   }
