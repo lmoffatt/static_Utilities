@@ -24,6 +24,8 @@ auto operator>>(std::istream& is, T x)->decltype (x.className,is)
   std::string s;
   is>>s;
   std::string name(x.className.c_str());
+  auto name2=name;
+  auto s2=s;
   if (s==name)
   {
     return is;
@@ -32,18 +34,18 @@ auto operator>>(std::istream& is, T x)->decltype (x.className,is)
   {
     is.setstate(std::ios::failbit);
     return is;
-   }
+  }
 }
 
 
 template <class ...T>
 std::istream& operator>>(std::istream& is, std::tuple<T...>& tu)
 {
-   std::apply([&is](auto&... e){((
+  std::apply([&is](auto&... e){((
                                        is>>e
                                        ),...);},tu);
 
-   return is;
+  return is;
 }
 
 
