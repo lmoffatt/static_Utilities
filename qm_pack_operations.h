@@ -309,6 +309,28 @@ auto apply_twin(Fout&& fout,Fin&& fin, const std::tuple<Ts...>& t1,const std::tu
 
 #include <variant>
 
+template <std::size_t, class, bool> struct pack_tuple_element_safe_impl;
+
+template <std::size_t I, class...Ts,
+          template<class...> class Tuple>
+struct pack_tuple_element_safe_impl<I, Tuple<Ts...>,true>{
+  using type=    std::tuple_element_t<I,std::tuple<Ts...>>;
+};
+template <std::size_t I,
+          class Tuple>
+struct pack_tuple_element_safe_impl<I, Tuple,false>{
+  using type=    Cs<>;
+};
+template <std::size_t, class> struct pack_tuple_element_safe;
+
+template <std::size_t I,class...Ts, template<class...>class Tuple>
+struct pack_tuple_element_safe<I,Tuple<Ts...>>{using type=typename pack_tuple_element_safe_impl<I,Tuple<Ts...>,I<sizeof... (Ts)>::type;};
+
+template<std::size_t I, class Tu>
+using pack_tuple_element_safe_t=typename pack_tuple_element_safe<I,Tu>::type;
+
+
+
 template<class ...>struct pack_to_column;
 
 template<class ...Ts > using pack_to_column_t=typename pack_to_column<Ts...>::type;
@@ -317,11 +339,13 @@ template <class T> struct pack_to_column<T>{using type=T;};
 template <class... T> struct pack_to_column<std::tuple<T...>>{using type=std::tuple<T...>;};
 
 
+
+
 template <class... Ts> struct pack_to_column{using type=std::variant<Ts...>;};
 
 template <class ...Tu, std::size_t I> struct pack_to_column<std::integral_constant<std::size_t,I>,Tu...>
 {
-  using type=typename transfer_t<pack_unique_t<Cs<std::tuple_element_t<I,Tu>...>>,pack_to_column<>>::type;
+  using type=typename transfer_t<pack_unique_t<Cs<pack_tuple_element_safe_t<I,Tu>...>>,pack_to_column<>>::type;
 };
 
 template <class ...Tu, std::size_t...Is> struct pack_to_column<std::index_sequence<Is...>,Tu...>
